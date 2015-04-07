@@ -1,11 +1,11 @@
 <?
 //usage, $1-site name $2-user $3-ssl_cert $4=ssl_bundle $5=ssl_key $6=force_ssl=1 or 2
-  $site_name=$1;
-  $user=$2;
-  $key=$5;
-$cert=$3;
-$force_ssl=$6;
- $bundle=$4;
+  $site_name=$argv[1];
+  $user=$argv[2];
+  $key=$argv[5];
+$cert=$argv[3];
+$force_ssl=$argv[6];
+ $bundle=$argv[4];
  if($key && $cert && $bundle) {   $ssl="yes"; } 
  $config_apache='<VirtualHost 127.0.0.1:8080>
         ServerAdmin com@'.$site_name.'
