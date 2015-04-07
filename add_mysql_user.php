@@ -3,7 +3,7 @@
 //example:add_mysql_user.php user 'password' 'root_password'
 
 $mysql_user=$argv[1];
-$mysql_passwod=$argv[2];
+$mysql_password=$argv[2];
 $root_password=$argv[3];
 
 mysql_connect('localhost', 'root', $root_password);
