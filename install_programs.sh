@@ -6,6 +6,7 @@ then
 fi
 echo "deb http://ftp.debian.org/debian wheezy-backports main contrib non-free" >> /etc/apt//sources.list
 apt-get update
+apt-get upgrade
 apt-get install phpmyadmin mysql-server php5-mysql apache2 nginx php5-sqlite php5-gd php5-imap php5-curl libapache2-mod-rpaf ftp-upload git
 apt-get -t wheezy-backports install nginx-full
 a2enmod rewrite
