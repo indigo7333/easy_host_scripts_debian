@@ -60,11 +60,26 @@ proxy_read_timeout 180;
 # back-end этим заниматься не должен
 location ~* \.(jpg|jpeg|gif|png|ico|css|bmp|swf|js|txt)$ {
 root /home/'.$user.'/www/'.$site_name.';
+ expires           0;
+ add_header        Cache-Control private;
+
 }
 ';
 if($ssl=="yes") {$config_nginx.="
 ssl_certificate /home/$user/ssl/$site_name/ssl.crt;
 ssl_certificate_key /home/$user/ssl/$site_name/ssl.key;
+add_header Strict-Transport-Security max-age=31536000;
+ssl_stapling on;
+ssl_stapling_verify on;
+ssl_client_certificate /home/cyberssl/ssl/cyberssl.com/ssl.trusted;
+ssl_crl /home/cyberssl/ssl/cyberssl.com/ssl.trusted;
+ssl_trusted_certificate /home/cyberssl/ssl/cyberssl.com/ssl.trusted;
+ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+ssl_prefer_server_ciphers on;
+ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5;
+ssl_session_cache shared:SSL:10m;
+ssl_session_timeout 10m;
+
 ";  }
 if($force_ssl=="1") {
  $config_nginx.='if ($scheme = http) {
