@@ -10,7 +10,7 @@ $force_ssl=$argv[6];
  $config_apache='<VirtualHost 127.0.0.1:8080>
         ServerAdmin com@'.$site_name.'
         ServerName '.$site_name.'
-	ServerAlias '.$site_name.'
+	ServerAlias www.'.$site_name.'
         DocumentRoot /home/'.$user.'/www/'.$site_name.'
         <Directory />
                 Options FollowSymLinks
