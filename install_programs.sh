@@ -4,8 +4,10 @@ then
 	echo "enter IP address please";
 	exit
 fi
+echo "deb http://ftp.debian.org/debian wheezy-backports main contrib non-free" >> /etc/apt//sources.list
 apt-get update
 apt-get install phpmyadmin mysql-server php5-mysql apache2 nginx php5-sqlite php5-gd php5-imap php5-curl libapache2-mod-rpaf ftp-upload git
+apt-get -t wheezy-backports install nginx-full
 a2enmod rewrite
 echo "NameVirtualHost 127.0.0.1:8080
 Listen 127.0.0.1:8080" > /etc/apache2/ports.conf
@@ -124,6 +126,11 @@ echo "<VirtualHost 127.0.0.1:8080>
 
 chmod 777 -R /var/log/apache2
 chmod 777 -R /var/log/nginx
+
+
+sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 127M/g' /etc/php5/*/php.ini
+sed -i 's/post_max_size = 8M/post_max_size = 127M/g' /etc/php5/*/php.ini
+
 
 rm /etc/apache2/sites-enabled/000-default
 /etc/init.d/apache2 restart
