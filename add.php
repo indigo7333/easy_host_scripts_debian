@@ -74,7 +74,6 @@ ssl_stapling_verify on;
 ssl_client_certificate /home/cyberssl/ssl/cyberssl.com/ssl.trusted;
 ssl_crl /home/cyberssl/ssl/cyberssl.com/ssl.trusted;
 ssl_trusted_certificate /home/cyberssl/ssl/cyberssl.com/ssl.trusted;
-ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 ssl_prefer_server_ciphers on;
 ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5;
 ssl_session_cache shared:SSL:10m;
@@ -98,6 +97,7 @@ exec("mkdir /home/$user/ssl/$site_name");
 exec("chmod 777 -R /home/$user/ssl");
 exec("chown www-data:$user -R /home/$user/ssl/");
 exec("cat $cert $bundle > /home/$user/ssl/$site_name/ssl.crt");
+exec("cat $bundle > /home/$user/ssl/$site_name/ssl.trusted");
 exec("cp $key /home/$user/ssl/$site_name/ssl.key");
  } 
 exec("mkdir /home/$user/www");
