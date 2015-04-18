@@ -12,8 +12,16 @@ do
  then
 	continue
  fi
- FILE=$db.gz
- mysqldump -u root -h localhost --password="$MYSQL_PASS" $db | gzip -9 > /tmp/$FILE
+ FILE=$db.tar.gz
+ FOLDER_DB=db_$db 
+ mkdir /tmp/$FOLDER_DB
+ mysqldump -u root -h localhost --password="$MYSQL_PASS" $db > /tmp/$FOLDER_DB/$db.sql
+ echo "$(date)" > /tmp/$FOLDER_DB/backup_date.txt
+ cd /tmp/$FOLDER_DB
+ tar --exclude='.' -czf /tmp/$FILE * 
  ftp-upload -h $ftp_ip --passive -u ftp_user --password $ftp_pass -d $folder_name_ftp/$FOLDER/mysql/ /tmp/$FILE
  rm /tmp/$FILE
+ rm /tmp/$FOLDER_DB/$db.sql
+ rm /tmp/$FOLDER_DB/backup_date.txt
+ rmdir /tmp/$FOLDER_DB
 done

@@ -12,7 +12,7 @@ do
  then
 	continue
  fi
- FILE=$db.gz
+ FILE=$db.tar.gz
  FOLDER_DB=db_$db 
  mkdir /tmp/$FOLDER_DB
  mysqldump -u root -h localhost --password="$MYSQL_PASS" $db > /tmp/$FOLDER_DB/$db.sql
