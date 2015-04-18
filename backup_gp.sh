@@ -1,4 +1,7 @@
 #usage $1=ftp_host $2=$users_backup $3=folder_name_ftp $4=ftp_pass $5hourly/daily/monthly  $6=pass_gpg
+
+lockfile -r 0 /tmp/backup_gp.lock || exit 1
+
 ftp_ip=$1
 folder_name_ftp=$3
 ftp_pass=$4
@@ -18,4 +21,6 @@ do
   rm /tmp/$FILE.gpg
 	rm /home/$user/backup_date.txt
 done
+
+rm -f /tmp/backup_gp.lock
                                                          

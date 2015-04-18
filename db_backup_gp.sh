@@ -1,4 +1,7 @@
 #usage $1=ftp_host $2=folder_name_ftp $3=ftp_pass $4=mysql_pass $5=hourly/daily/monthly  $6=pass $7- specific db
+
+lockfile -r 0 /tmp/db_backup_gp.lock || exit 1
+
 ftp_ip=$1
 folder_name_ftp=$2
 ftp_pass=$3
@@ -35,3 +38,5 @@ do
  rm /tmp/$FILE.gpg
  rmdir /tmp/$FOLDER_DB
 done
+
+rm -f /tmp/db_backup_gp.lock
