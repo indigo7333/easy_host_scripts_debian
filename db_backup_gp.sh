@@ -14,7 +14,7 @@ do
  fi
  FILE=$db.gz
  FOLDER_DB=db_$db 
- mkdir /tmp/$FOLDER
+ mkdir /tmp/$FOLDER_DB
  mysqldump -u root -h localhost --password="$MYSQL_PASS" $db > /tmp/$FOLDER_DB/$db.sql
  echo "$(date)" > /tmp/$FOLDER_DB/backup_date.txt
  cd /tmp/$FOLDER_DB/
