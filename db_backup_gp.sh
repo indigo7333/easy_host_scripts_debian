@@ -17,7 +17,7 @@ do
  mkdir /tmp/$FOLDER_DB
  mysqldump -u root -h localhost --password="$MYSQL_PASS" $db > /tmp/$FOLDER_DB/$db.sql
  echo "$(date)" > /tmp/$FOLDER_DB/backup_date.txt
- cd /tmp/$FOLDER_DB/
+ cd /tmp/$FOLDER_DB
  tar --exclude='.' -czf /tmp/$FILE * 
  gpg -o /tmp/$FILE.gpg --passphrase $6 -c /tmp/$FILE
  ftp-upload -h $ftp_ip --passive -u ftp_user --password $ftp_pass -d $folder_name_ftp/$FOLDER/mysql/ /tmp/$FILE.gpg
