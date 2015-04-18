@@ -1,9 +1,10 @@
-#usage $1=ftp_host $2=folder_name_ftp $3=ftp_pass $4=mysql_pass $5=hourly/daily/monthly  $6=pass
+#usage $1=ftp_host $2=folder_name_ftp $3=ftp_pass $4=mysql_pass $5=hourly/daily/monthly  $6=pass $7- specific db
 ftp_ip=$1
 folder_name_ftp=$2
 ftp_pass=$3
 MYSQL_PASS=$4
 FOLDER=$5
+SPECIFIC_DB=$7
 #DBS=$(`mysql -u root -h localhost --password="$(MYSQL_PASS)" -Bse 'show databases'`)
 DBS="$(mysql -u root -h localhost --password="$MYSQL_PASS" -Bse 'show databases')"
 for db in $DBS
@@ -11,6 +12,13 @@ do
  if [ $db = 'information_schema' ] || [ $db = 'phpmyadmin' ] || [ $db = 'performance_schema' ] || [ $db = 'mysql' ]
  then
 	continue
+ fi
+ if [ ! -z $SPECIFIC_DB ]
+ then
+   if [ $db != $SPECIFIC_DB ]
+   then
+    continue
+   fi
  fi
  FILE=$db.tar.gz
  FOLDER_DB=db_$db 
