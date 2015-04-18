@@ -13,7 +13,7 @@ do
 	cd /home/$user
 	tar --exclude='.' -czf /tmp/$FILE *
   gpg -o /tmp/$FILE.gpg --passphrase $6 -c /tmp/$FILE
-	ftp-upload -h $ftp_ip --passive -u ftp_user --password $ftp_pass -d $host_name_ftp/$FOLDER/files/$user /tmp/$FILE.gpg
+	ftp-upload -h $ftp_ip --passive -u ftp_user --password $ftp_pass -d $folder_name_ftp/$FOLDER/files/$user /tmp/$FILE.gpg
 	rm /tmp/$FILE
   rm /tmp/$FILE.gpg
 	rm /home/$user/backup_date.txt

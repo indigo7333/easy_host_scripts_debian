@@ -15,7 +15,7 @@ do
  FILE=$db.gz
  mysqldump -u root -h localhost --password="${mysql_pass}" $db | gzip -9 > /tmp/$FILE
  gpg -o /tmp/$FILE.gpg --passphrase $6 -c /tmp/$FILE
- ftp-upload -h $ftp_ip --passive -u ftp_user --password $ftp_pass -d $host_name_ftp/$FOLDER/mysql/ /tmp/$FILE.gpg
+ ftp-upload -h $ftp_ip --passive -u ftp_user --password $ftp_pass -d $folder_name_ftp/$FOLDER/mysql/ /tmp/$FILE.gpg
  rm /tmp/$FILE
  rm /tmp/$FILE.gpg
 done
