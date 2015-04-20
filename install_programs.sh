@@ -7,7 +7,8 @@ fi
 echo "deb http://ftp.debian.org/debian wheezy-backports main contrib non-free" >> /etc/apt//sources.list
 apt-get update
 apt-get upgrade
-apt-get install phpmyadmin mysql-server php5-mysql apache2 nginx php5-sqlite php5-gd php5-imap php5-curl libapache2-mod-rpaf ftp-upload git
+apt-get install phpmyadmin mysql-server php5-mysql apache2 nginx php5-sqlite php5-gd procmail php5-imap php5-curl libapache2-mod-rpaf ftp-upload
+#procmail needed for lockfile function
 apt-get -t wheezy-backports install nginx-full
 a2enmod rewrite
 echo "NameVirtualHost 127.0.0.1:8080
@@ -131,6 +132,9 @@ chmod 777 -R /var/log/nginx
 
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 127M/g' /etc/php5/*/php.ini
 sed -i 's/post_max_size = 8M/post_max_size = 127M/g' /etc/php5/*/php.ini
+sed -i 's/session.gc_probability = 0/session.gc_probability = 1/g' /etc/php5/*/php.ini
+sed -i 's/session.gc_divisor = 1000/session.gc_divisor = 100/g' /etc/php5/*/php.ini
+sed -i 's/session.gc_maxlifetime = 1440/session.gc_maxlifetime = 5400/g' /etc/php5/*/php.ini
 
 
 rm /etc/apache2/sites-enabled/000-default
