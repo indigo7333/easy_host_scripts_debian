@@ -20,7 +20,8 @@ pid /var/run/nginx.pid;
 
 events {
         worker_connections 2048;
-        multi_accept on;
+        multi_accept on;      
+        use epoll;
 }
 
 http {  sendfile on;
@@ -39,7 +40,17 @@ http {  sendfile on;
         error_log /var/log/nginx/error.log;
 
         gzip on;
-        gzip_disable \"msie6\";
+        gzip_http_version  1.1;
+        gzip_vary          on;
+        gzip_comp_level    4;
+        gzip_proxied any;
+        gzip_min_length 1400;
+        gzip_static off;
+        gzip_types text/plain text/xml text/css text/javascript text/js application/x-javascript font/woff application/font-woff application/x-font-woff image/jpeg;
+        gzip_disable "MSIE [1-6]\.";
+
+        ssl_session_cache shared:SSL:20m;
+        ssl_session_timeout 4h;
 
         include /etc/nginx/conf.d/*.conf;
         include /etc/nginx/sites-enabled/*;

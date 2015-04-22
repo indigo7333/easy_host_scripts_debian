@@ -37,7 +37,7 @@ $force_ssl=$argv[6];
         php_admin_value session.save_path "/home/'.$user.'/mod-tmp"
 </VirtualHost>';
   $config_nginx='server {'; if($ssl=="yes") { $config_nginx.="
-listen *:443 ssl;
+listen *:443 ssl spdy;
 ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 "; }
 
@@ -45,6 +45,15 @@ $config_nginx.='
 listen *:80; ## listen for ipv4
 server_name '.$site_name.' www.'.$site_name.';
 access_log /home/'.$user.'/logs/nginx/access.log;
+';
+if($force_ssl=="1") {
+ $config_nginx.='add_header Strict-Transport-Security max-age=31536000;
+ if ($scheme = http) {
+        return 301 https://$server_name$request_uri;
+    }
+';
+}
+$config_nginx.= '
 # Перенаправление на back-end
 location / {
 proxy_pass http://127.0.0.1:8080/;
@@ -62,30 +71,30 @@ location ~* \.(jpg|jpeg|gif|png|ico|css|bmp|swf|js|txt)$ {
 root /home/'.$user.'/www/'.$site_name.';
  expires           0;
  add_header        Cache-Control private;
+ 
+ #for cache 10 days
+ #add_header        Cache-Control public;
+ #expires 10d;
+ #access_log off;
 
 }
 ';
 if($ssl=="yes") {$config_nginx.="
 ssl_certificate /home/$user/ssl/$site_name/ssl.crt;
 ssl_certificate_key /home/$user/ssl/$site_name/ssl.key;
-add_header Strict-Transport-Security max-age=31536000;
 ssl_stapling on;
 ssl_stapling_verify on;
 ssl_client_certificate /home/$user/ssl/$site_name/ssl.trusted;
 ssl_crl /home/$user/ssl/$site_name/ssl.trusted;
 ssl_trusted_certificate /home/$user/ssl/$site_name/ssl.trusted;
 ssl_prefer_server_ciphers on;
+resolver 8.8.8.8 8.8.4.4 valid=300s;
+ssl_session_tickets on;
 ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5;
-ssl_session_cache shared:SSL:10m;
-ssl_session_timeout 10m;
+
 
 ";  }
-if($force_ssl=="1") {
- $config_nginx.='if ($scheme = http) {
-        return 301 https://$server_name$request_uri;
-    }
-';
-}
+
 
 $config_nginx.='
 }
