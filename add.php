@@ -24,13 +24,13 @@ $force_ssl=$argv[6];
         </Directory>
 
 
-        ErrorLog /home/'.$user.'/logs/apache/error.log
+        ErrorLog /home/'.$user.'/logs/apache/'.$site_name.'_error.log
 
         # Possible values include: debug, info, notice, warn, error, crit,
         # alert, emerg.
-        LogLevel warn
+        LogLevel error
 
-        CustomLog /home/'.$user.'/logs/apache//access.log combined
+        CustomLog /home/'.$user.'/logs/apache/'.$site_name.'_access.log combined
 
         AddType application/x-httpd-php .php .php3 .php4 .php5 .phtml
         php_admin_value upload_tmp_dir "/home/'.$user.'/mod-tmp"
@@ -44,7 +44,8 @@ ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 $config_nginx.='
 listen *:80; ## listen for ipv4
 server_name '.$site_name.' www.'.$site_name.';
-access_log /home/'.$user.'/logs/nginx/access.log;
+access_log /home/'.$user.'/logs/nginx/'.$site_name.'_access.log;
+error_log /home/'.$user.'/logs/nginx/'.$site_name.'_error.log;
 ';
 if($force_ssl=="1") {
  $config_nginx.='add_header Strict-Transport-Security max-age=31536000;

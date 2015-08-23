@@ -40,6 +40,7 @@ http {  sendfile on;
         error_log /var/log/nginx/error.log;
 
         gzip on;
+        #gzip_disable \"msie6\";
         gzip_http_version  1.1;
         gzip_vary          on;
         gzip_comp_level    4;
