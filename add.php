@@ -103,7 +103,7 @@ if($ssl=="yes")
   ";
   if($strong_ssl==2) { $config_nginx.="ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5;"; }
   else { $config_nginx.="ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';"; }
-  $config_nginx.="  #ssl config";
+  $config_nginx.="  #end ssl config";
   }
 
 $config_nginx.='
@@ -111,7 +111,29 @@ $config_nginx.='
 ';
                       
 
-
+if($ssl=="yes")
+ {
+  exec("mkdir /home/$user/ssl/");
+  exec("mkdir /home/$user/ssl/$site_name");
+  exec("chmod 777 -R /home/$user/ssl");
+  exec("chown www-data:$user -R /home/$user/ssl/");
+  echo "cat $cert $bundle > /home/$user/ssl/$site_name/ssl.crt";
+  exec("cat $cert $bundle > /home/$user/ssl/$site_name/ssl.crt");
+  exec("cat $bundle > /home/$user/ssl/$site_name/ssl.trusted");
+  exec("cat $key > /home/$user/ssl/$site_name/ssl.key");
+  if(!file_exists("/home/$user/ssl/$site_name/dhparam.pem") )  { exec("openssl dhparam -out /home/$user/ssl/$site_name/dhparam.pem 2048"); }
+ } 
+exec("mkdir /home/$user/www");
+exec("mkdir /home/$user/www/$site_name");
+exec("mkdir /home/$user/logs");
+exec("mkdir /home/$user/logs/apache");
+exec("mkdir /home/$user/logs/nginx");
+exec("mkdir /home/$user/mod-tmp");
+exec("chown www-data:$user /home/$user/mod-tmp");
+exec("chmod 777 -R /home/$user/mod-tmp");
+exec("chown -R www-data:$user /home/$user/logs"); 
+exec("chmod 777 -R /home/$user/logs");
+exec("chown $user:$user /home/$user/www");
 exec("chown $user:$user /home/$user/www/$site_name");
 
 
