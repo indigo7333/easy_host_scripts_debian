@@ -1,12 +1,14 @@
 <?
-//usage, $1-site name $2-user $3-ssl_cert $4=ssl_bundle $5=ssl_key $6=force_ssl=1 or 2
+//usage, $1-site name $2-user  $3=force_ssl=1 or 2  $4-ssl_cert $5=ssl_bundle 6=ssl_key $7 - 1 or 2 strong ssl sec, 
   $site_name=$argv[1];
   $user=$argv[2];
-  $key=$argv[5];
-$cert=$argv[3];
-$force_ssl=$argv[6];
- $bundle=$argv[4];
+  $key=$argv[6];
+$cert=$argv[4];
+$force_ssl=$argv[3];
+$strong_ssl=$argv[7];
+ $bundle=$argv[5];
  if($key && $cert && $bundle) {   $ssl="yes"; } 
+
  $config_apache='<VirtualHost 127.0.0.1:8080>
         ServerAdmin com@'.$site_name.'
         ServerName '.$site_name.'
@@ -55,6 +57,9 @@ if($force_ssl=="1") {
 ';
 }
 $config_nginx.= '
+add_header X-Content-Type-Options nosniff;
+add_header X-XSS-Protection "1; mode=block";
+add_header Content-Security-Policy "default-src \'self\'; script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' https://ssl.google-analytics.com https://assets.zendesk.com https://connect.facebook.net; img-src \'self\' https://ssl.google-analytics.com https://s-static.ak.facebook.com https://assets.zendesk.com; style-src \'self\' \'unsafe-inline\' https://fonts.googleapis.com https://assets.zendesk.com; font-src \'self\' https://themes.googleusercontent.com; frame-src https://assets.zendesk.com https://www.facebook.com https://s-static.ak.facebook.com https://tautt.zendesk.com; object-src \'none\'";
 # Перенаправление на back-end
 location / {
 proxy_pass http://127.0.0.1:8080/;
@@ -68,15 +73,14 @@ proxy_read_timeout 180;
 }
 # Статическиое наполнение отдает сам nginx
 # back-end этим заниматься не должен
-location ~* \.(jpg|jpeg|gif|png|ico|css|bmp|swf|js|txt)$ {
-root /home/'.$user.'/www/'.$site_name.';
- expires           0;
- add_header        Cache-Control private;
+location ~* \.(jpg|jpeg|gif|png|ico|css|bmp|swf|js|txt|woff|woff2)$ {
+ root /home/'.$user.'/www/'.$site_name.';
+ #expires           0;
+ #add_header        Cache-Control private;
  
- #for cache 10 days
- #add_header        Cache-Control public;
- #expires 10d;
- #access_log off;
+ add_header        Cache-Control public;
+ expires 10d;
+ access_log off;
 
 }
 ';
@@ -85,30 +89,38 @@ ssl_certificate /home/$user/ssl/$site_name/ssl.crt;
 ssl_certificate_key /home/$user/ssl/$site_name/ssl.key;
 ssl_stapling on;
 ssl_stapling_verify on;
+ssl_dhparam /home/$user/ssl/$site_name/dhparam.pem
 ssl_client_certificate /home/$user/ssl/$site_name/ssl.trusted;
 ssl_crl /home/$user/ssl/$site_name/ssl.trusted;
 ssl_trusted_certificate /home/$user/ssl/$site_name/ssl.trusted;
 ssl_prefer_server_ciphers on;
 resolver 8.8.8.8 8.8.4.4 valid=300s;
 ssl_session_tickets on;
-ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5;
+ssl_session_cache shared:SSL:50m;
+ssl_session_timeout 4h;
 
+";
 
-";  }
+if($strong_ssl==2) { $config_nginx.="ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5;";
+else { $config_nginx.="ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';"; }
+
 
 
 $config_nginx.='
 }
 ';
+                      
 
-
-if($ssl=="yes") {exec("mkdir /home/$user/ssl/");
-exec("mkdir /home/$user/ssl/$site_name");
-exec("chmod 777 -R /home/$user/ssl");
-exec("chown www-data:$user -R /home/$user/ssl/");
-exec("cat $cert $bundle > /home/$user/ssl/$site_name/ssl.crt");
-exec("cat $bundle > /home/$user/ssl/$site_name/ssl.trusted");
-exec("cp $key /home/$user/ssl/$site_name/ssl.key");
+if($ssl=="yes")
+ {
+  exec("mkdir /home/$user/ssl/");
+  exec("mkdir /home/$user/ssl/$site_name");
+  exec("chmod 777 -R /home/$user/ssl");
+  exec("chown www-data:$user -R /home/$user/ssl/");
+  exec("cat $cert $bundle > /home/$user/ssl/$site_name/ssl.crt");
+  exec("cat $bundle > /home/$user/ssl/$site_name/ssl.trusted");
+  exec("cp $key /home/$user/ssl/$site_name/ssl.key");
+  if(!file_exists("/home/$user/ssl/$site_name/dhparam.pem") )  { exec("openssl dhparam -out /home/$user/ssl/$site_name/dhparam.pem 2048"); }
  } 
 exec("mkdir /home/$user/www");
 exec("mkdir /home/$user/www/$site_name");
@@ -129,5 +141,8 @@ file_put_contents("/etc/apache2/sites-enabled/$site_name", $config_apache);
 
 exec("/etc/init.d/apache2 restart");
 exec("/etc/init.d/nginx restart");
+
+
+
 
 ?>

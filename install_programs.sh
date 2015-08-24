@@ -27,7 +27,7 @@ events {
 http {  sendfile on;
         tcp_nopush on;
         tcp_nodelay on;
-	reset_timedout_connection on;
+      	reset_timedout_connection on;
         keepalive_timeout 65;
         types_hash_max_size 2048;
         server_tokens off;
@@ -40,7 +40,6 @@ http {  sendfile on;
         error_log /var/log/nginx/error.log;
 
         gzip on;
-        #gzip_disable \"msie6\";
         gzip_http_version  1.1;
         gzip_vary          on;
         gzip_comp_level    4;
@@ -50,8 +49,6 @@ http {  sendfile on;
         gzip_types text/plain text/xml text/css text/javascript text/js application/x-javascript font/woff application/font-woff application/x-font-woff image/jpeg;
         gzip_disable "MSIE [1-6]\.";
 
-        ssl_session_cache shared:SSL:20m;
-        ssl_session_timeout 4h;
 
         include /etc/nginx/conf.d/*.conf;
         include /etc/nginx/sites-enabled/*;
