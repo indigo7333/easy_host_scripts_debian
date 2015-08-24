@@ -117,6 +117,7 @@ if($ssl=="yes")
   exec("mkdir /home/$user/ssl/$site_name");
   exec("chmod 777 -R /home/$user/ssl");
   exec("chown www-data:$user -R /home/$user/ssl/");
+  echo "cat $cert $bundle > /home/$user/ssl/$site_name/ssl.crt";
   exec("cat $cert $bundle > /home/$user/ssl/$site_name/ssl.crt");
   exec("cat $bundle > /home/$user/ssl/$site_name/ssl.trusted");
   exec("cp $key /home/$user/ssl/$site_name/ssl.key");
