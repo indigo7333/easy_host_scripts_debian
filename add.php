@@ -49,7 +49,8 @@ server_name '.$site_name.' www.'.$site_name.';
 access_log /home/'.$user.'/logs/nginx/'.$site_name.'_access.log;
 error_log /home/'.$user.'/logs/nginx/'.$site_name.'_error.log;
 ';
-if($force_ssl=="1") {
+if($force_ssl=="1" && $ssl!="yes"){ $config_nginx.='add_header Strict-Transport-Security max-age=31536000;'; }
+elseif($force_ssl=="1" && $ssl=="yes") {
  $config_nginx.='add_header Strict-Transport-Security max-age=31536000;
  if ($scheme = http) {
         return 301 https://$server_name$request_uri;
@@ -86,7 +87,7 @@ location ~* \.(jpg|jpeg|gif|png|ico|css|bmp|swf|js|txt|woff|woff2)$ {
 if($ssl=="yes") 
   {
   $config_nginx.="
-  #ssl config
+#ssl config
   ssl_certificate /home/$user/ssl/$site_name/ssl.crt;
   ssl_certificate_key /home/$user/ssl/$site_name/ssl.key;
   ssl_stapling on;
@@ -103,7 +104,8 @@ if($ssl=="yes")
   ";
   if($strong_ssl==2) { $config_nginx.="ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5;"; }
   else { $config_nginx.="ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';"; }
-  $config_nginx.="  #end ssl config";
+  $config_nginx.=" 
+#end ssl config";
   }
 
 $config_nginx.='
