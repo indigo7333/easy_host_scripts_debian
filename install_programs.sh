@@ -7,7 +7,7 @@ fi
 echo "deb http://ftp.debian.org/debian wheezy-backports main contrib non-free" >> /etc/apt//sources.list
 apt-get update
 apt-get upgrade
-apt-get install php5 phpmyadmin mysql-server php5-mysql apache2 nginx php5-sqlite php5-gd procmail php5-imap php5-curl libapache2-mod-rpaf ftp-upload
+apt-get install php5 phpmyadmin mysql-server php5-cli php5-mysql apache2 nginx php5-sqlite php5-gd procmail php5-imap php5-curl libapache2-mod-rpaf ftp-upload
 apt-get remove exim4 exim4-base exim4-config exim4-daemon-light to my script
 #procmail needed for lockfile function
 apt-get -t wheezy-backports install nginx-full
