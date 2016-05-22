@@ -73,7 +73,7 @@ proxy_read_timeout 180;
 }
 # Статическиое наполнение отдает сам nginx
 # back-end этим заниматься не должен
-location ~* \.(jpg|jpeg|gif|png|ico|css|bmp|swf|js|txt|woff|woff2)$ {
+location ~* \.(jpg|jpeg|gif|png|ico|css|bmp|swf|js|txt|woff|woff2|eot)$ {
  root /home/'.$user.'/www/'.$site_name.';
  #expires           0;
  #add_header        Cache-Control private;
