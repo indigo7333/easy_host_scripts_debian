@@ -10,9 +10,12 @@ $strong_ssl=$argv[7];
  if($key && $cert && $bundle) {   $ssl="yes"; } 
 
  $config_apache='<VirtualHost 127.0.0.1:8080>
+		RUidGid  '.$user.' '.$user.'
+        RDocumentChRoot / /home/'.$user.'/www/'.$site_name.'
+
         ServerAdmin com@'.$site_name.'
         ServerName '.$site_name.'
-	ServerAlias www.'.$site_name.'
+		ServerAlias www.'.$site_name.'
         DocumentRoot /home/'.$user.'/www/'.$site_name.'
         <Directory />
                 Options FollowSymLinks
@@ -39,7 +42,7 @@ $strong_ssl=$argv[7];
         php_admin_value session.save_path "/home/'.$user.'/mod-tmp"
 </VirtualHost>';
   $config_nginx='server {'; if($ssl=="yes") { $config_nginx.="
-listen *:443 ssl spdy;
+listen *:443 ssl http2;
 ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 "; }
 

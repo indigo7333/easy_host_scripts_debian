@@ -1,17 +1,26 @@
 IP=`dig +short myip.opendns.com @resolver1.opendns.com`;
+DEBIANVER=`lsb_release -cs`
 if [ ! $IP ]
 then 
 	echo "enter IP address please";
 	exit
 fi
-echo "deb http://ftp.debian.org/debian wheezy-backports main contrib non-free" >> /etc/apt//sources.list
+#only for debian 7
+echo "deb http://ftp.debian.org/debian $DEBIANVER-backports main contrib non-free" >> /etc/apt/sources.list
+echo "deb http://nginx.org/packages/mainline/debian/ $DEBIANVER nginx" >> /etc/apt/sources.list
+echo "deb-src http://nginx.org/packages/mainline/debian/ $DEBIANVER nginx" >> /etc/apt/sources.list
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62
+
 apt-get update
-apt-get upgrade
-apt-get install php5 phpmyadmin mysql-server php5-cli php5-mysql apache2 nginx php5-sqlite php5-gd procmail php5-imap php5-curl libapache2-mod-rpaf ftp-upload
-apt-get remove exim4 exim4-base exim4-config exim4-daemon-light
+apt-get upgrade -y
+apt-get -y install phpmyadmin mysql-server php5-mysql apache2 nginx php5-sqlite php5-gd procmail php5-cli php5-imap php5-curl libapache2-mod-rpaf rdiff-backup rsync
+apt-get -y remove exim4 exim4-base exim4-config exim4-daemon-light
+apt-get -y install libapache2-mod-ruid2
+a2enmod ruid2 rpaf rewrite
+#ftp-upload - not required
 #procmail needed for lockfile function
-apt-get -t wheezy-backports install nginx-full
-a2enmod rewrite
+#apt-get -t $DEBIANVER-backports install nginx-full
+apt-get -y install nginx
 echo "NameVirtualHost 127.0.0.1:8080
 Listen 127.0.0.1:8080" > /etc/apache2/ports.conf
 
@@ -33,7 +42,7 @@ http {  sendfile on;
         types_hash_max_size 2048;
         server_tokens off;
         server_names_hash_bucket_size 128;
-        client_max_body_size 128M;
+        client_max_body_size 256M;
         include /etc/nginx/mime.types;
         default_type application/octet-stream;
 
@@ -82,6 +91,8 @@ Timeout 65
 KeepAlive Off
 MaxKeepAliveRequests 100
 KeepAliveTimeout 5
+User www-data
+Group www-data 
 
 
 <IfModule mpm_prefork_module>
@@ -140,8 +151,8 @@ chmod 777 -R /var/log/apache2
 chmod 777 -R /var/log/nginx
 
 
-sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 127M/g' /etc/php5/*/php.ini
-sed -i 's/post_max_size = 8M/post_max_size = 127M/g' /etc/php5/*/php.ini
+sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/g' /etc/php5/*/php.ini
+sed -i 's/post_max_size = 8M/post_max_size = 256M/g' /etc/php5/*/php.ini
 sed -i 's/session.gc_probability = 0/session.gc_probability = 1/g' /etc/php5/*/php.ini
 sed -i 's/session.gc_divisor = 1000/session.gc_divisor = 100/g' /etc/php5/*/php.ini
 sed -i 's/session.gc_maxlifetime = 1440/session.gc_maxlifetime = 5400/g' /etc/php5/*/php.ini

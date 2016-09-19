@@ -1,5 +1,5 @@
 #require IP if cloud 
-
+   
 IP=`dig +short myip.opendns.com @resolver1.opendns.com`;
 echo "deb http://ftp.cyconet.org/debian wheezy-updates main non-free contrib" >> \
 /etc/apt/sources.list.d/wheezy-updates.cyconet.list; \
@@ -32,9 +32,19 @@ force_dot_files=YES
 pasv_enable=Yes
 pasv_max_port=10300
 pasv_min_port=10050
-passwd_chroot_enable=YES" > /etc/vsftpd.conf
+passwd_chroot_enable=YES
+ssl_tlsv1=YES
+ssl_sslv2=NO
+ssl_sslv3=NO
+ssl_enable=YES
+allow_anon_ssl=NO
+force_local_data_ssl=YES
+force_local_logins_ssl=YES
+require_ssl_reuse=NO
+ssl_ciphers=HIGH" > /etc/vsftpd.conf
 if [ $IP ]
 then
 	echo "pasv_address=$IP" >> /etc/vsftpd.conf
 fi
+/bin/sh $IP /etc/ssl/private/vsftpd.pem
 /etc/init.d/vsftpd restart
