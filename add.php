@@ -129,6 +129,7 @@ if($ssl=="yes")
   if(!file_exists("/home/$user/ssl/$site_name/dhparam.pem") )  { exec("openssl dhparam -out /home/$user/ssl/$site_name/dhparam.pem 2048"); }
  } 
 exec("mkdir /home/$user/www");
+exec("mkdir /etc/nginx/sites-enabled/");
 exec("mkdir /home/$user/www/$site_name");
 exec("mkdir /home/$user/logs");
 exec("mkdir /home/$user/logs/apache");
