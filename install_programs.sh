@@ -13,7 +13,7 @@ apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62
 
 apt-get update
 apt-get upgrade -y
-apt-get -y install phpmyadmin mysql-server php5-mysql apache2 nginx php5-sqlite php5-gd procmail php5-cli php5-imap php5-curl libapache2-mod-rpaf rdiff-backup rsync
+apt-get -y install phpmyadmin mysql-server php5-mysql apache2 nginx  php5-intl php5-sqlite php5-gd procmail php5-cli php5-imap php5-curl libapache2-mod-rpaf rdiff-backup rsync
 apt-get -y remove exim4 exim4-base exim4-config exim4-daemon-light
 apt-get -y install libapache2-mod-ruid2
 a2enmod ruid2 rpaf rewrite
