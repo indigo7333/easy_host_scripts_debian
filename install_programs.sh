@@ -61,9 +61,11 @@ http {  sendfile on;
 
 
         include /etc/nginx/conf.d/*.conf;
-        include /etc/nginx/sites-enabled/*;
+        include /etc/nginx/sites-enabled/*.conf;
 }
 " > /etc/nginx/nginx.conf
+
+mkdir /etc/nginx/sites-enabled
 
 echo "server {
         listen  80; ## listen for ipv4; this line is default and implied
@@ -83,7 +85,7 @@ proxy_read_timeout 180;
 }
 
 }
-' >> /etc/nginx/sites-enabled/default
+' >> /etc/nginx/sites-enabled/default.conf
 
 echo 'LockFile ${APACHE_LOCK_DIR}/accept.lock
 PidFile ${APACHE_PID_FILE}
