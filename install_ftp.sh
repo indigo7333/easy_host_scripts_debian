@@ -46,5 +46,5 @@ if [ $IP ]
 then
 	echo "pasv_address=$IP" >> /etc/vsftpd.conf
 fi
-/bin/sh $IP /etc/ssl/private/vsftpd.pem
+openssl req -x509 -nodes -days 1365 -newkey rsa:1024 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem
 /etc/init.d/vsftpd restart
