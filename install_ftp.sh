@@ -1,9 +1,9 @@
 #require IP if cloud 
-   
+DEBIANVER=`lsb_release -cs`   
 IP=`dig +short myip.opendns.com @resolver1.opendns.com`;
-echo "deb http://ftp.cyconet.org/debian wheezy-updates main non-free contrib" >> \
-/etc/apt/sources.list.d/wheezy-updates.cyconet.list; \
-aptitude update; aptitude install -t wheezy-updates debian-cyconet-archive-keyring vsftpd
+echo "deb http://ftp.cyconet.org/debian $DEBIANVER-updates main non-free contrib" >> \
+/etc/apt/sources.list.d/$DEBIANVER-updates.cyconet.list; \
+aptitude update; aptitude install -t $DEBIANVER-updates debian-cyconet-archive-keyring vsftpd
 
 echo "listen=YES
 local_enable=YES
