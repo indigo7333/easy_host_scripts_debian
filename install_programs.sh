@@ -72,7 +72,7 @@ echo "server {
         root /usr/share/nginx/www;
         index index.html index.htm;
         server_name $IP;
-" >  /etc/nginx/sites-enabled/default
+" >  /etc/nginx/sites-enabled/default.conf
 echo 'location / {
 proxy_pass http://127.0.0.1:8080/;
 proxy_redirect http://127.0.0.1:8080/ /;
