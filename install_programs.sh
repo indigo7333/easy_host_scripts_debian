@@ -69,6 +69,7 @@ mkdir /etc/nginx/sites-enabled
 
 echo "server {
         listen  80; ## listen for ipv4; this line is default and implied
+	listen 443;
         root /usr/share/nginx/www;
         index index.html index.htm;
         server_name $IP;
