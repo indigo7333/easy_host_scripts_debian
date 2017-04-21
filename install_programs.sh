@@ -87,7 +87,12 @@ proxy_read_timeout 180;
 }
 ' >> /etc/nginx/sites-enabled/default.conf
 mkdir /etc/apache2/conf.d
-echo 'LockFile ${APACHE_LOCK_DIR}/accept.lock
+if [ $DEBIANVER = "jessie" ]; then
+	apache_lockfile = 'Mutex file:${APACHE_LOCK_DIR} default'
+else
+	apache_lockfile = 'LockFile ${APACHE_LOCK_DIR}/accept.lock'
+fi
+echo $apache_lockfile'
 PidFile ${APACHE_PID_FILE}
 Timeout 65
 KeepAlive Off
