@@ -143,8 +143,8 @@ exec("chown $user:$user /home/$user/www");
 exec("chown $user:$user /home/$user/www/$site_name");
 
 
-file_put_contents("/etc/nginx/sites-enabled/$site_name", $config_nginx);
-file_put_contents("/etc/apache2/sites-enabled/$site_name", $config_apache);
+file_put_contents("/etc/nginx/sites-enabled/$site_name.conf", $config_nginx);
+file_put_contents("/etc/apache2/sites-enabled/$site_name.conf", $config_apache);
 
 exec("/etc/init.d/apache2 restart");
 exec("/etc/init.d/nginx restart");
