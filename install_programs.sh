@@ -1,3 +1,4 @@
+apt-get install -y dnsutils
 IP=`dig +short myip.opendns.com @resolver1.opendns.com`;
 DEBIANVER=`lsb_release -cs`
 if [ ! $IP ]
