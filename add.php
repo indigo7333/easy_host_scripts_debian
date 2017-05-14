@@ -1,4 +1,4 @@
-<?
+<?php
 //usage, $1-site name $2-user  $3=force_ssl=1 or 2  $4-ssl_cert $5=ssl_bundle 6=ssl_key $7 - 1 or 2 strong ssl sec, 
   $site_name=$argv[1];
   $user=$argv[2];
