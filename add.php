@@ -22,7 +22,7 @@ $strong_ssl=$argv[7];
                 AllowOverride All
         </Directory>
         <Directory /home/'.$user.'/www/'.$site_name.'>
-                Options -Indexes FollowSymLinks MultiViews
+                Options -Indexes +FollowSymLinks +MultiViews
                 AllowOverride All
                 Order allow,deny
                 allow from all
