@@ -1,4 +1,4 @@
-<?
+<?php
 //usage $1=mysql_user $2=mysql_password $3=root_password
 //example:add_mysql_user.php user 'password' 'root_password'
 
