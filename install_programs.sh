@@ -61,7 +61,7 @@ http {  sendfile on;
         gzip_disable "MSIE [1-6]\.";
 
 
-        include /etc/nginx/conf.d/*.conf;
+     
         include /etc/nginx/sites-enabled/*.conf;
 }
 " > /etc/nginx/nginx.conf
