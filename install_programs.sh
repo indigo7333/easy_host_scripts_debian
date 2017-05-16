@@ -88,6 +88,7 @@ proxy_read_timeout 180;
 
 }
 ' >> /etc/nginx/sites-enabled/default.conf
+rm /etc/apache2/sites-enabled/000-default.conf
 mkdir /etc/apache2/conf.d
 if [ $DEBIANVER = "jessie" ]; then
 	apache_lockfile = 'Mutex file:${APACHE_LOCK_DIR} default'
