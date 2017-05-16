@@ -95,6 +95,13 @@ if [ $DEBIANVER = "jessie" ]; then
 else
 	apache_lockfile = 'LockFile ${APACHE_LOCK_DIR}/accept.lock'
 fi
+
+if [ $DEBIANVER = "jessie" ]; then
+	apache_config_folder = 'conf-enabled/'
+else
+	apache_config_folder = 'conf.d/'
+fi
+
 echo $apache_lockfile'
 PidFile ${APACHE_PID_FILE}
 Timeout 65
@@ -134,7 +141,7 @@ LogFormat "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" combine
 LogFormat "%h %l %u %t \"%r\" %>s %O" common
 LogFormat "%{Referer}i -> %U" referer
 LogFormat "%{User-agent}i" agent
-Include conf.d/
+Include '$apache_config_folder'
 ServerTokens ProductOnly
 ServerSignature Off
 
