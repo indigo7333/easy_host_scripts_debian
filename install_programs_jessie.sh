@@ -1,6 +1,5 @@
 apt-get install -y dnsutils
 IP=`dig +short myip.opendns.com @resolver1.opendns.com`;
-DEBIANVER=`lsb_release -cs`
 if [ ! $IP ]
 then 
 	echo "enter IP address please";
@@ -90,19 +89,14 @@ proxy_read_timeout 180;
 ' >> /etc/nginx/sites-enabled/default.conf
 rm /etc/apache2/sites-enabled/000-default.conf
 mkdir /etc/apache2/conf.d
-if [ $DEBIANVER = "jessie" ]; then
-	apache_lockfile = 'Mutex file:${APACHE_LOCK_DIR} default'
-else
-	apache_lockfile = 'LockFile ${APACHE_LOCK_DIR}/accept.lock'
-fi
 
-if [ $DEBIANVER = "jessie" ]; then
-	apache_config_folder = 'conf-enabled/'
-else
-	apache_config_folder = 'conf.d/'
-fi
+APACHE_LOCKFILE = 'Mutex file:${APACHE_LOCK_DIR} default'
 
-echo $apache_lockfile'
+
+
+APACHE_CONFIG_FOLDER = 'conf-enabled/'
+
+echo $APACHE_LOCKFILE'
 PidFile ${APACHE_PID_FILE}
 Timeout 65
 KeepAlive Off
@@ -141,7 +135,7 @@ LogFormat "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" combine
 LogFormat "%h %l %u %t \"%r\" %>s %O" common
 LogFormat "%{Referer}i -> %U" referer
 LogFormat "%{User-agent}i" agent
-Include '$apache_config_folder'
+Include '$APACHE_CONFIG_FOLDER'
 ServerTokens ProductOnly
 ServerSignature Off
 
