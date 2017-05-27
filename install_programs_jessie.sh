@@ -90,11 +90,11 @@ proxy_read_timeout 180;
 rm /etc/apache2/sites-enabled/000-default.conf
 mkdir /etc/apache2/conf.d
 
-APACHE_LOCKFILE = 'Mutex file:${APACHE_LOCK_DIR} default'
+APACHE_LOCKFILE='Mutex file:${APACHE_LOCK_DIR} default'
 
 
 
-APACHE_CONFIG_FOLDER = 'conf-enabled/'
+APACHE_CONFIG_FOLDER='conf-enabled/'
 
 echo $APACHE_LOCKFILE'
 PidFile ${APACHE_PID_FILE}
