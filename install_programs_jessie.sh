@@ -69,10 +69,17 @@ mkdir /etc/nginx/sites-enabled
 
 echo "server {
         listen  80; ## listen for ipv4; this line is default and implied
-	listen 443;
+	listen 443 ssl;
         root /usr/share/nginx/www;
         index index.html index.htm;
         server_name $IP;
+	
+	
+	if ($ssl_protocol = "") {
+   		 rewrite ^ https://$server_name$request_uri permanent;
+  	}
+
+	
 " >  /etc/nginx/sites-enabled/default.conf
 echo 'location / {
 proxy_pass http://127.0.0.1:8080/;
@@ -85,7 +92,18 @@ proxy_send_timeout 120;
 proxy_read_timeout 180;
 }
 
+#ssl config
+  ssl_certificate /etc/nginx/ssl/default.crt;
+  ssl_certificate_key /etc/nginx/ssl/default.key;
+  resolver 8.8.8.8 8.8.4.4 valid=300s;
+  ssl_session_tickets on;
+  ssl_session_cache shared:SSL:50m;
+  ssl_session_timeout 4h;
+  ssl_ciphers "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128$!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA";
+
 }
+
+
 ' >> /etc/nginx/sites-enabled/default.conf
 rm /etc/apache2/sites-enabled/000-default.conf
 mkdir /etc/apache2/conf.d
@@ -173,5 +191,8 @@ sed -i 's/session.gc_maxlifetime = 1440/session.gc_maxlifetime = 5400/g' /etc/ph
 
 
 rm /etc/apache2/sites-enabled/000-default
+apt-get autoremove
+
+openssl req -new -x509 -days 2365 -nodes -out /etc/nginx/ssl/default.crt -keyout /etc/nginx/ssl/default.key
 /etc/init.d/apache2 restart
 /etc/init.d/nginx restart
