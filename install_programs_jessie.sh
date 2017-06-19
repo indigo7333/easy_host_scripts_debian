@@ -73,14 +73,15 @@ echo "server {
         root /usr/share/nginx/www;
         index index.html index.htm;
         server_name $IP;
-	
-	
-	if ($ssl_protocol = "") {
-   		 rewrite ^ https://$server_name$request_uri permanent;
-  	}
+"  >  /etc/nginx/sites-enabled/default.conf
+
 
 	
-" >  /etc/nginx/sites-enabled/default.conf
+echo'	if ($ssl_protocol = "") {
+   		 rewrite ^ https://$server_name$request_uri permanent;
+  	}
+	
+' >  /etc/nginx/sites-enabled/default.conf
 echo 'location / {
 proxy_pass http://127.0.0.1:8080/;
 proxy_redirect http://127.0.0.1:8080/ /;
