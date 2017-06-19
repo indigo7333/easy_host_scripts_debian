@@ -192,7 +192,7 @@ sed -i 's/session.gc_maxlifetime = 1440/session.gc_maxlifetime = 5400/g' /etc/ph
 
 rm /etc/apache2/sites-enabled/000-default
 apt-get autoremove
-
+mkdir /etc/nginx/ssl
 openssl req -new -x509 -days 2365 -nodes -out /etc/nginx/ssl/default.crt -keyout /etc/nginx/ssl/default.key
 /etc/init.d/apache2 restart
 /etc/init.d/nginx restart
