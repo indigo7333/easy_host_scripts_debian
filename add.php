@@ -1,12 +1,17 @@
 <?php
-//usage, $1-site name $2-user  $3=force_ssl=1 or 2  $4-ssl_cert $5=ssl_bundle 6=ssl_key $7 - 1 or 2 strong ssl sec, 
+//usage, $1-site name $2-user  $3=force_ssl=1 or 2 letsnecrypt  $4-ssl_cert $5=ssl_bundle 6=ssl_key $7 - 1 or 2 strong ssl sec, 
   $site_name=$argv[1];
   $user=$argv[2];
   $key=$argv[6];
 $cert=$argv[4];
+ $bundle=$argv[5];
+if($cert == 'letsencrypt') { 
+	$letsencrypt = 1;
+}
+
 $force_ssl=$argv[3];
 $strong_ssl=$argv[7];
- $bundle=$argv[5];
+
  if($key && $cert && $bundle) {   $ssl="yes"; } 
 
  $config_apache='<VirtualHost 127.0.0.1:8080>
@@ -87,18 +92,27 @@ location ~* \.(jpg|jpeg|gif|png|ico|css|bmp|swf|js|txt|woff|woff2|eot)$ {
 
 }
 ';
-if($ssl=="yes") 
-  {
+if($ssl=="yes") {
+	if($letsencrypt == 1) {
+		$cert_path = "/etc/letsencrypt/live/$site_name/fullchain.pem";
+		$key_path = "/etc/letsencrypt/live/$site_name/privkey.pem";
+		$trusted_path = "/etc/letsencrypt/live/$site_name/chain.pem";	
+	} else {
+		$cert_path = "/home/$user/ssl/$site_name/ssl.crt";
+		$key_path = "/home/$user/ssl/$site_name/ssl.key";
+		$trusted_path = "/home/$user/ssl/$site_name/ssl.trusted";	
+	}
+	
   $config_nginx.="
 #ssl config
-  ssl_certificate /home/$user/ssl/$site_name/ssl.crt;
-  ssl_certificate_key /home/$user/ssl/$site_name/ssl.key;
+  ssl_certificate $cert_path;
+  ssl_certificate_key $key_path;
   ssl_stapling on;
   ssl_stapling_verify on;
   ssl_dhparam /home/$user/ssl/$site_name/dhparam.pem;
-  ssl_client_certificate /home/$user/ssl/$site_name/ssl.trusted;
-  ssl_crl /home/$user/ssl/$site_name/ssl.trusted;
-  ssl_trusted_certificate /home/$user/ssl/$site_name/ssl.trusted;
+  ssl_client_certificate $trusted_path;
+  ssl_crl $trusted_path;
+  ssl_trusted_certificate $trusted_path;
   ssl_prefer_server_ciphers on;
   resolver 8.8.8.8 8.8.4.4 valid=300s;
   ssl_session_tickets on;
@@ -122,10 +136,12 @@ if($ssl=="yes")
   exec("mkdir /home/$user/ssl/$site_name");
   exec("chmod 777 -R /home/$user/ssl");
   exec("chown www-data:$user -R /home/$user/ssl/");
-  echo "cat $cert $bundle > /home/$user/ssl/$site_name/ssl.crt";
-  exec("cat $cert $bundle > /home/$user/ssl/$site_name/ssl.crt");
-  exec("cat $bundle > /home/$user/ssl/$site_name/ssl.trusted");
-  exec("cat $key > /home/$user/ssl/$site_name/ssl.key");
+  if($letsencrypt != 1) {
+  	echo "cat $cert $bundle > /home/$user/ssl/$site_name/ssl.crt";
+  	exec("cat $cert $bundle > /home/$user/ssl/$site_name/ssl.crt");
+  	exec("cat $bundle > /home/$user/ssl/$site_name/ssl.trusted");
+  	exec("cat $key > /home/$user/ssl/$site_name/ssl.key");
+  }
   if(!file_exists("/home/$user/ssl/$site_name/dhparam.pem") )  { exec("openssl dhparam -out /home/$user/ssl/$site_name/dhparam.pem 2048"); }
  } 
 exec("mkdir /home/$user/www");
