@@ -190,7 +190,7 @@ sed -i 's/session.gc_probability = 0/session.gc_probability = 1/g' /etc/php5/*/p
 sed -i 's/session.gc_divisor = 1000/session.gc_divisor = 100/g' /etc/php5/*/php.ini
 sed -i 's/session.gc_maxlifetime = 1440/session.gc_maxlifetime = 5400/g' /etc/php5/*/php.ini
 sed -i 's/short_open_tag = Off/short_open_tag = On/g' /etc/php5/*/php.ini
-
+echo 'error_reporting = E_COMPILE_ERROR|E_RECOVERABLE_ERROR|E_ERROR|E_CORE_ERROR' >> /etc/php5/*/php.ini
 
 
 rm /etc/apache2/sites-enabled/000-default
