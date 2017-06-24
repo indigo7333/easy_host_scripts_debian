@@ -106,11 +106,6 @@ echo $apache_lockfile'
 PidFile ${APACHE_PID_FILE}
 Timeout 65
 KeepAlive Off
-MaxKeepAliveRequests 100
-KeepAliveTimeout 5
-User www-data
-Group www-data 
-
 
 <IfModule mpm_prefork_module>
     StartServers          10
@@ -131,8 +126,8 @@ AccessFileName .htaccess
 
 DefaultType None
 HostnameLookups Off
+LogLevel error
 ErrorLog ${APACHE_LOG_DIR}/error.log
-LogLevel warn
 Include mods-enabled/*.load
 Include mods-enabled/*.conf
 Include ports.conf
@@ -141,10 +136,11 @@ LogFormat "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" combine
 LogFormat "%h %l %u %t \"%r\" %>s %O" common
 LogFormat "%{Referer}i -> %U" referer
 LogFormat "%{User-agent}i" agent
+CustomLog ${APACHE_LOG_DIR}/access.log combined
 Include '$apache_config_folder'
 ServerTokens ProductOnly
 ServerSignature Off
-
+TraceEnable Off
 Include sites-enabled/
 ' > /etc/apache2/apache2.conf
 
@@ -166,7 +162,8 @@ echo "<VirtualHost 127.0.0.1:8080>
 
 chmod 777 -R /var/log/apache2
 chmod 777 -R /var/log/nginx
-
+a2disconf security
+a2disconf javascript-common
 
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/g' /etc/php5/*/php.ini
 sed -i 's/post_max_size = 8M/post_max_size = 256M/g' /etc/php5/*/php.ini
