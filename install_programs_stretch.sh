@@ -7,8 +7,6 @@ then
 fi
 
 echo "deb http://ftp.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list
-echo "deb http://nginx.org/packages/mainline/debian/ stretch nginx" >> /etc/apt/sources.list
-echo "deb-src http://nginx.org/packages/mainline/debian/ stretch nginx" >> /etc/apt/sources.list
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62
 
 apt-get update
